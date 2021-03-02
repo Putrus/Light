@@ -1,0 +1,4 @@
+*.dll
+*vcxproj*
+Debug/
+Wooden.png
