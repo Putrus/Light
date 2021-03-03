@@ -7,7 +7,7 @@
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(600, 600), "SFML works!");
-	/*
+	
 	sf::CircleShape shape(600.f);
 	shape.setFillColor(sf::Color::White);
 	sf::Sprite bg;
@@ -31,7 +31,7 @@ int main()
 		return -1;
 	}
 	shader.setUniform("lightPos", sf::Vector2f(0.0f, 0.0f));
-	shader.setUniform("radius", 600.f);*/
+	shader.setUniform("radius", 400.f);
 	
 
 	std::vector<Obstacle> obstacles;
@@ -74,6 +74,7 @@ int main()
 		//dLine->calcCollision(100.0f, 150.0f, 100.0f, 100.0f);
 		light->setPosition(mx, my);
 		light->update(obstacles);
+		shader.setUniform("lightPos", sf::Vector2f(mx, 600 - my));
 		sf::VertexArray k(sf::TriangleFan, light->getLines().size()*3 + 2);
 		k[0].position = light->getPosition();
 		for (int i = 0; i < light->getLines().size(); i++) {
@@ -91,13 +92,14 @@ int main()
 		}
 		
 		window.clear();
-		window.draw(obstacle);
-		window.draw(obstacle2);
-		window.draw(obstacle3);
+		//window.draw(obstacle);
+		//window.draw(obstacle2);
+		//window.draw(obstacle3);
 		//window.draw(*dLine);
-		window.draw(k);
+		window.draw(k, &shader);
+		window.draw(bg, sf::BlendMultiply);
 		//window.draw(s);
-		light->draw(window); 
+		//light->draw(window); 
 		window.display();
 	}
 
