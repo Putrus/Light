@@ -76,10 +76,11 @@ float LineTest::calcCollision(float x_b, float y_b, float x_b2, float y_b2)
 void LineTest::calcCollision(std::vector<Obstacle> obstacles) {
 	float dx_a = x_a2 - getVertexPosition(0).x;
 	float dy_a = y_a2 - getVertexPosition(0).y;
-	float t = std::min(calcCollision(0.0f, 0.0f, 600.0f, 0.0f), 
-		std::min(calcCollision(600.0f, 0.0f, 600.0f, 600.0f), 
-			std::min(calcCollision(600.0f, 600.0f, 0.0f, 600.0f), 
-				calcCollision(0.0f, 600.0f, 0.0f, 0.0f))));
+
+	float t = std::min(calcCollision(-0.1f, -0.1f, 600.1f, -0.1f),
+		std::min(calcCollision(600.1f, -0.1f, 600.1f, 600.1f),
+			std::min(calcCollision(600.1f, 600.1f, -0.1f, 600.1f),
+				calcCollision(-0.1f, 600.1f, -0.1f, -0.1f))));
 	for (size_t i = 0; i < obstacles.size(); i++) {
 		for (size_t j = 0; j < obstacles[i].getVertexCount(); j++) {
 			float tmp = calcCollision(obstacles[i][j].position.x, obstacles[i][j].position.y, obstacles[i][(j + 1) % (int)obstacles[i].getVertexCount()].position.x, obstacles[i][(j + 1) % (int)obstacles[i].getVertexCount()].position.y);

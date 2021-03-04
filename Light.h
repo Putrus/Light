@@ -12,7 +12,7 @@ private:
 	std::vector<LineTest*> lines;
 	
 public:
-	std::vector<LineTest*> derivativeLines;
+	//std::vector<LineTest*> derivativeLines;
 	Light();
 	Light(float x, float y, float size, std::vector<Obstacle> obstacles);
 	void draw(sf::RenderWindow& window);

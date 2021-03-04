@@ -21,8 +21,8 @@ Light::Light(float x, float y, float size, std::vector<Obstacle> obstacles)
 			this->lines.push_back(line);
 			LineTest* dLine = new LineTest(sf::Vector2f(x, y), sf::Vector2f(0.0f, 0.0f));
 			LineTest* dLine2 = new LineTest(sf::Vector2f(x, y), sf::Vector2f(0.0f, 0.0f));
-			this->derivativeLines.push_back(dLine);
-			this->derivativeLines.push_back(dLine2);
+			this->lines.push_back(dLine);
+			this->lines.push_back(dLine2);
 		}
 		LineTest* line1 = new LineTest(sf::Vector2f(x, y), sf::Vector2f(0.0f, 0.0f));
 		LineTest* dLine1 = new LineTest(sf::Vector2f(x, y), sf::Vector2f(0.0f, 0.0f));
@@ -37,17 +37,17 @@ Light::Light(float x, float y, float size, std::vector<Obstacle> obstacles)
 		LineTest* dLine4 = new LineTest(sf::Vector2f(x, y), sf::Vector2f(0.0f, 0.0f));
 		LineTest* dLine42 = new LineTest(sf::Vector2f(x, y), sf::Vector2f(0.0f, 0.0f));
 		this->lines.push_back(line1);
-		this->derivativeLines.push_back(dLine1);
-		this->derivativeLines.push_back(dLine12);
+		this->lines.push_back(dLine1);
+		this->lines.push_back(dLine12);
 		this->lines.push_back(line2);
-		this->derivativeLines.push_back(dLine2);
-		this->derivativeLines.push_back(dLine22);
+		this->lines.push_back(dLine2);
+		this->lines.push_back(dLine22);
 		this->lines.push_back(line3);
-		this->derivativeLines.push_back(dLine3);
-		this->derivativeLines.push_back(dLine32);
+		this->lines.push_back(dLine3);
+		this->lines.push_back(dLine32);
 		this->lines.push_back(line4);
-		this->derivativeLines.push_back(dLine4);
-		this->derivativeLines.push_back(dLine42);
+		this->lines.push_back(dLine4);
+		this->lines.push_back(dLine42);
 
 		
 	}
@@ -60,10 +60,6 @@ void Light::draw(sf::RenderWindow& window)
 	{
 		window.draw(*lines[i]);
 	}
-	for (size_t i = 0; i < derivativeLines.size(); i++)
-	{
-		window.draw(*derivativeLines[i]);
-	}
 }
 
 
@@ -71,11 +67,11 @@ void Light::setPosition(sf::Vector2f pos)
 {
 	this->x = pos.x;
 	this->y = pos.y;
-	for (size_t i = 0; i < lines.size(); i++)
+	for (size_t i = 0; i < lines.size(); i+=3)
 	{
 		lines[i]->setVertexPosition(0, pos);
-		derivativeLines[i * 2]->setVertexPosition(0, pos);
-		derivativeLines[i * 2 + 1]->setVertexPosition(0, pos);
+		lines[i + 1]->setVertexPosition(0, pos);
+		lines[i + 2]->setVertexPosition(0, pos);
 	}
 }
 void Light::setPosition(float x, float y)
@@ -89,20 +85,19 @@ sf::Vector2f Light::getPosition() {
 
 void Light::update(std::vector<Obstacle> obstacles)
 {
-	std::sort(lines.begin(), lines.end(), [](LineTest * a, LineTest* b) {
-		return a->getAlpha() < b->getAlpha(); });
-	for (size_t i = 0; i < lines.size(); i++)
+	for (size_t i = 0; i < lines.size(); i+=3)
 	{
-		derivativeLines[i*2]->calcDerivativePosition(0.005, *lines[i], size);
-		derivativeLines[i*2+1]->calcDerivativePosition(-0.005, *lines[i], size);
+		lines[i+1]->calcDerivativePosition(0.01, *lines[i], size);
+		lines[i+2]->calcDerivativePosition(-0.01, *lines[i], size);
 		lines[i]->calcCollision(obstacles);
-		derivativeLines[i*2]->calcCollision(obstacles);
-		derivativeLines[i*2+1]->calcCollision(obstacles);
+		lines[i+1]->calcCollision(obstacles);
+		lines[i+2]->calcCollision(obstacles);
 		/*float k = 255 * (float)i / (float)lines.size();
 		lines[i][0][0].color = sf::Color(k, 255.0f - k, 255.0f - k);
 		lines[i][0][1].color = sf::Color(k, 255.0f - k, 255.0f - k);*/
-
 		lines[i]->calcAlpha();
+		lines[i+1]->calcAlpha();
+		lines[i+2]->calcAlpha();
 	}
 	return;
 }

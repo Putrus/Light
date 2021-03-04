@@ -75,21 +75,27 @@ int main()
 		light->setPosition(mx, my);
 		light->update(obstacles);
 		shader.setUniform("lightPos", sf::Vector2f(mx, 600 - my));
-		sf::VertexArray k(sf::TriangleFan, light->getLines().size()*3 + 2);
-		k[0].position = light->getPosition();
-		for (int i = 0; i < light->getLines().size(); i++) {
-			k[i * 3 + 2].position = light->getLines()[i]->getVertexPosition(1);
-				k[i * 3 + 1].position = light->derivativeLines[i * 2]->getVertexPosition(1);
-				k[i * 3 + 3].position = light->derivativeLines[i * 2 + 1]->getVertexPosition(1);
-		}
-		k[light->getLines().size()*3 + 1].position = light->derivativeLines[0]->getVertexPosition(1);
 		
-		sf::ConvexShape s(light->getLines().size() * 3);
-		for (int i = 0; i < light->getLines().size(); i++) {
-			s.setPoint(i * 3, light->derivativeLines[i * 2]->getVertexPosition(1));
-			s.setPoint(i * 3 + 1, light->getLines()[i]->getVertexPosition(1));
-			s.setPoint(i * 3 + 2, light->derivativeLines[i * 2 + 1]->getVertexPosition(1));
+		std::vector<LineTest*> l = light->getLines();
+		
+		sf::VertexArray k(sf::TriangleFan, l.size() + 2);
+		
+		std::sort(l.begin(), l.end(), [](LineTest* a, LineTest* b) {
+			return a->getAlpha() < b->getAlpha(); });
+		k[0].position = light->getPosition();
+		k[0].color = sf::Color(255, 255, 255, 128);
+		for (int i = 0; i < l.size(); i+=3) {
+			
+			k[i + 1].position = l[i]->getVertexPosition(1);
+				k[i + 2].position = l[i + 1]->getVertexPosition(1);
+				k[i + 3].position = l[i + 2]->getVertexPosition(1);
+				k[i + 1].color = sf::Color(255, 255, 255, 128);
+				k[i + 2].color = sf::Color(255, 255, 255, 128);
+				k[i + 3].color = sf::Color(255, 255, 255, 128);
 		}
+		k[l.size() + 1].position = l[0]->getVertexPosition(1);
+		k[l.size() + 1].color = sf::Color(255, 255, 255, 128);
+
 		
 		window.clear();
 		//window.draw(obstacle);
