@@ -6,10 +6,9 @@
 #include "Light.h"
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(600, 600), "SFML works!");
+	sf::RenderWindow window(sf::VideoMode(1000, 1000), "SFML works!");
 	
-	sf::CircleShape shape(600.f);
-	shape.setFillColor(sf::Color::White);
+
 	sf::Sprite bg;
 	sf::Texture texture;
 	if (!texture.loadFromFile("Wooden.png")) {
@@ -17,22 +16,9 @@ int main()
 		return -1;
 	}
 	texture.setRepeated(true);
-	
 	bg.setTexture(texture);
 	bg.setScale(0.3, 0.3);
 	bg.setTextureRect(sf::IntRect(0, 0, 8000, 8000));
-	shape.setOrigin(shape.getGlobalBounds().left + shape.getGlobalBounds().width / 2, shape.getGlobalBounds().top + shape.getGlobalBounds().height / 2);
-
-
-	sf::Shader shader;
-	if (!shader.loadFromFile("myShader.frag",sf::Shader::Fragment))
-	{
-		std::cout << "Shader error!";
-		return -1;
-	}
-	shader.setUniform("lightPos", sf::Vector2f(0.0f, 0.0f));
-	shader.setUniform("radius", 400.f);
-	
 
 	std::vector<Obstacle> obstacles;
 	Obstacle obstacle(sf::Vector2f(100.0f, 100.0f), sf::Vector2f(150.0f, 100.0f), sf::Vector2f(150.0f, 150.0f), sf::Vector2f(100.0f, 150.0f));
@@ -45,11 +31,12 @@ int main()
 	obstacles.push_back(obstacle2);
 	obstacles.push_back(obstacle3);
 	Light* light = new Light(0.0f, 0.0f, 1200.0f, obstacles);
-	sf::Vector2f a(5.0f, 3.0f);
-	sf::Vector2f b(3.0f, 2.0f);
-	sf::Vector2f c = a - b;
-
-	LineTest* dLine = new LineTest(sf::Vector2f(300.0f,300.0f), sf::Vector2f(0.0f,0.0f));
+	std::vector<Light*> lights;
+	for (int i = 0; i < 9; i++) {
+		Light* light1 = new Light(0.0f, 0.0f, 1200.0f, obstacles);
+		light1->setBrightness(0.4f);
+		lights.push_back(light1);
+	}
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -60,52 +47,18 @@ int main()
 		}
 		float mx = sf::Mouse::getPosition(window).x;
 		float my = sf::Mouse::getPosition(window).y;
-		//dLine->setVertexPosition(1, mx, my);
-		//dLine->calcAlpha(1);
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-			
-		}
-		/*float mx = sf::Mouse::getPosition(window).x;
-		float my = sf::Mouse::getPosition(window).y;
-		shape.setPosition(mx,my);
-		shader.setUniform("lightPos", sf::Vector2f(mx, 600 - my));
-		window.draw(shape,&shader);
-		window.draw(bg, sf::BlendMultiply);*/
-		//dLine->calcCollision(100.0f, 150.0f, 100.0f, 100.0f);
 		light->setPosition(mx, my);
 		light->update(obstacles);
-		shader.setUniform("lightPos", sf::Vector2f(mx, 600 - my));
-		
-		std::vector<LineTest*> l = light->getLines();
-		
-		sf::VertexArray k(sf::TriangleFan, l.size() + 2);
-		
-		std::sort(l.begin(), l.end(), [](LineTest* a, LineTest* b) {
-			return a->getAlpha() < b->getAlpha(); });
-		k[0].position = light->getPosition();
-		k[0].color = sf::Color(255, 255, 255, 128);
-		for (int i = 0; i < l.size(); i+=3) {
-			
-			k[i + 1].position = l[i]->getVertexPosition(1);
-				k[i + 2].position = l[i + 1]->getVertexPosition(1);
-				k[i + 3].position = l[i + 2]->getVertexPosition(1);
-				k[i + 1].color = sf::Color(255, 255, 255, 128);
-				k[i + 2].color = sf::Color(255, 255, 255, 128);
-				k[i + 3].color = sf::Color(255, 255, 255, 128);
+		for (int i = 0; i < 9; i++) {
+			lights[i]->setPosition(mx + 5.0f * cos(6.28 * i/9), my - 5.0f * sin(6.28 * i/9));
+			lights[i]->update(obstacles);
 		}
-		k[l.size() + 1].position = l[0]->getVertexPosition(1);
-		k[l.size() + 1].color = sf::Color(255, 255, 255, 128);
-
-		
 		window.clear();
-		//window.draw(obstacle);
-		//window.draw(obstacle2);
-		//window.draw(obstacle3);
-		//window.draw(*dLine);
-		window.draw(k, &shader);
+		light->draw(window);
+		for (int i = 0; i < 9; i++) {
+			lights[i]->draw(window);
+		}
 		window.draw(bg, sf::BlendMultiply);
-		//window.draw(s);
-		//light->draw(window); 
 		window.display();
 	}
 

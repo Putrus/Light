@@ -10,16 +10,18 @@ private:
 	float y;
 	float size;
 	std::vector<LineTest*> lines;
-	
+	sf::VertexArray* shape;
+	sf::Shader* shader;
 public:
-	//std::vector<LineTest*> derivativeLines;
 	Light();
 	Light(float x, float y, float size, std::vector<Obstacle> obstacles);
+	~Light();
 	void draw(sf::RenderWindow& window);
 	void setPosition(sf::Vector2f pos);
 	void setPosition(float x, float y);
 	sf::Vector2f getPosition();
 	void update(std::vector<Obstacle> obstacles);
 	std::vector<LineTest*> getLines();
+	void setBrightness(float brightness);
 };
 

@@ -27,13 +27,13 @@ Light::Light(float x, float y, float size, std::vector<Obstacle> obstacles)
 		LineTest* line1 = new LineTest(sf::Vector2f(x, y), sf::Vector2f(0.0f, 0.0f));
 		LineTest* dLine1 = new LineTest(sf::Vector2f(x, y), sf::Vector2f(0.0f, 0.0f));
 		LineTest* dLine12 = new LineTest(sf::Vector2f(x, y), sf::Vector2f(0.0f, 0.0f));
-		LineTest* line2 = new LineTest(sf::Vector2f(x, y), sf::Vector2f(0.0f, 600.0f));
+		LineTest* line2 = new LineTest(sf::Vector2f(x, y), sf::Vector2f(0.0f, 1000.0f));
 		LineTest* dLine2 = new LineTest(sf::Vector2f(x, y), sf::Vector2f(0.0f, 0.0f));
 		LineTest* dLine22 = new LineTest(sf::Vector2f(x, y), sf::Vector2f(0.0f, 0.0f));
-		LineTest* line3 = new LineTest(sf::Vector2f(x, y), sf::Vector2f(600.0f, 600.0f));
+		LineTest* line3 = new LineTest(sf::Vector2f(x, y), sf::Vector2f(1000.0f, 1000.0f));
 		LineTest* dLine3 = new LineTest(sf::Vector2f(x, y), sf::Vector2f(0.0f, 0.0f));
 		LineTest* dLine32 = new LineTest(sf::Vector2f(x, y), sf::Vector2f(0.0f, 0.0f));
-		LineTest* line4 = new LineTest(sf::Vector2f(x, y), sf::Vector2f(600.0f, 0.0f));
+		LineTest* line4 = new LineTest(sf::Vector2f(x, y), sf::Vector2f(1000.0f, 0.0f));
 		LineTest* dLine4 = new LineTest(sf::Vector2f(x, y), sf::Vector2f(0.0f, 0.0f));
 		LineTest* dLine42 = new LineTest(sf::Vector2f(x, y), sf::Vector2f(0.0f, 0.0f));
 		this->lines.push_back(line1);
@@ -48,18 +48,38 @@ Light::Light(float x, float y, float size, std::vector<Obstacle> obstacles)
 		this->lines.push_back(line4);
 		this->lines.push_back(dLine4);
 		this->lines.push_back(dLine42);
-
-		
 	}
+	shape = new sf::VertexArray(sf::TriangleFan, lines.size() + 2);
+	shader = new sf::Shader();
+	if (!shader->loadFromFile("lightShader.frag", sf::Shader::Fragment))
+	{
+		std::cout << "Failed to load shader!" << std::endl;
+	}
+	shader->setUniform("lightPos", sf::Vector2f(0.0f, 0.0f));
+	shader->setUniform("radius", 400.f);
+	shader->setUniform("brightness", 0.8f);
+	shader->setUniform("color", sf::Vector3f(1.0f, 1.0f, 1.0f));
+
 }
 
 
+Light::~Light() {
+	delete shape;
+	delete shader;
+	for (size_t i = 0; i < lines.size(); i++) {
+		delete lines[i];
+		lines.erase(lines.begin() + i);
+	}
+}
+
 void Light::draw(sf::RenderWindow& window)
 {
+	/*
 	for (size_t i = 0; i < lines.size(); i++)
 	{
 		window.draw(*lines[i]);
-	}
+	}*/
+	window.draw(*shape, shader);
 }
 
 
@@ -73,6 +93,7 @@ void Light::setPosition(sf::Vector2f pos)
 		lines[i + 1]->setVertexPosition(0, pos);
 		lines[i + 2]->setVertexPosition(0, pos);
 	}
+	shader->setUniform("lightPos", sf::Vector2f(x, 1000 - y));
 }
 void Light::setPosition(float x, float y)
 {
@@ -92,18 +113,29 @@ void Light::update(std::vector<Obstacle> obstacles)
 		lines[i]->calcCollision(obstacles);
 		lines[i+1]->calcCollision(obstacles);
 		lines[i+2]->calcCollision(obstacles);
-		/*float k = 255 * (float)i / (float)lines.size();
-		lines[i][0][0].color = sf::Color(k, 255.0f - k, 255.0f - k);
-		lines[i][0][1].color = sf::Color(k, 255.0f - k, 255.0f - k);*/
 		lines[i]->calcAlpha();
 		lines[i+1]->calcAlpha();
 		lines[i+2]->calcAlpha();
 	}
-	return;
+	std::vector<LineTest*> l = lines;
+	std::sort(l.begin(), l.end(), [](LineTest* a, LineTest* b) {
+		return a->getAlpha() < b->getAlpha(); });
+	(*shape)[0].position = getPosition();
+	for (size_t i = 0; i < l.size(); i += 3) {
+		(*shape)[i + 1].position = l[i]->getVertexPosition(1);
+		(*shape)[i + 2].position = l[i + 1]->getVertexPosition(1);
+		(*shape)[i + 3].position = l[i + 2]->getVertexPosition(1);
+	}
+	(*shape)[l.size() + 1].position = l[0]->getVertexPosition(1);
 }
 
 
 
 std::vector<LineTest*> Light::getLines() {
 	return lines;
+}
+
+
+void Light::setBrightness(float brightness) {
+	shader->setUniform("brightness", brightness);
 }

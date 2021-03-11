@@ -50,18 +50,12 @@ float LineTest::calcCollision(float x_b, float y_b, float x_b2, float y_b2)
 	}
 	float dx_b = x_b2 - x_b;
 	float dy_b = y_b2 - y_b;
-	
 	float dx_a = x_a2 - x_a;
 	float dy_a = y_a2 - y_a;
-
 	float T_a = (y_b * dx_b + dy_b * x_a - x_b * dy_b - y_a * dx_b) / (dy_a * dx_b - dy_b * dx_a);
-
 	float T_b = (x_a + dx_a * T_a - x_b) / dx_b;
-	
-	//std::cout << "T_a: " << T_a << " T_b: " << T_b << std::endl;
 	if (T_a > 0 && T_a < 1 && T_b > 0 && T_b < 1)
 	{
-
 		x_a = getVertexPosition(0).x + dx_a * T_a;
 		y_a = getVertexPosition(0).y + dy_a * T_a;
 		setVertexPosition(1, x_a, y_a);
@@ -77,10 +71,10 @@ void LineTest::calcCollision(std::vector<Obstacle> obstacles) {
 	float dx_a = x_a2 - getVertexPosition(0).x;
 	float dy_a = y_a2 - getVertexPosition(0).y;
 
-	float t = std::min(calcCollision(-0.1f, -0.1f, 600.1f, -0.1f),
-		std::min(calcCollision(600.1f, -0.1f, 600.1f, 600.1f),
-			std::min(calcCollision(600.1f, 600.1f, -0.1f, 600.1f),
-				calcCollision(-0.1f, 600.1f, -0.1f, -0.1f))));
+	float t = std::min(calcCollision(0.0f, 0.0f, 1000.0f, 0.0f),
+		std::min(calcCollision(1000.0f, 0.0f, 1000.0f, 1000.0f),
+			std::min(calcCollision(1000.0f, 1000.1f, 0.0f, 1000.0f),
+				calcCollision(0.0f, 1000.0f, 0.0f, 0.0f))));
 	for (size_t i = 0; i < obstacles.size(); i++) {
 		for (size_t j = 0; j < obstacles[i].getVertexCount(); j++) {
 			float tmp = calcCollision(obstacles[i][j].position.x, obstacles[i][j].position.y, obstacles[i][(j + 1) % (int)obstacles[i].getVertexCount()].position.x, obstacles[i][(j + 1) % (int)obstacles[i].getVertexCount()].position.y);
