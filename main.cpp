@@ -11,7 +11,8 @@ int main()
 
 	sf::Sprite bg;
 	sf::Texture texture;
-	if (!texture.loadFromFile("Wooden.png")) {
+	if (!texture.loadFromFile("Wooden.png"))
+   {
 		std::cout << "Error!";
 		return -1;
 	}
@@ -32,7 +33,8 @@ int main()
 	obstacles.push_back(obstacle3);
 	Light* light = new Light(0.0f, 0.0f, 1200.0f, obstacles);
 	std::vector<Light*> lights;
-	for (int i = 0; i < 9; i++) {
+	for (int i = 0; i < 9; i++)
+   {
 		Light* light1 = new Light(0.0f, 0.0f, 1200.0f, obstacles);
 		light1->setBrightness(0.4f);
 		lights.push_back(light1);
@@ -49,13 +51,15 @@ int main()
 		float my = sf::Mouse::getPosition(window).y;
 		light->setPosition(mx, my);
 		light->update(obstacles);
-		for (int i = 0; i < 9; i++) {
+		for (int i = 0; i < 9; i++)
+      {
 			lights[i]->setPosition(mx + 5.0f * cos(6.28 * i/9), my - 5.0f * sin(6.28 * i/9));
 			lights[i]->update(obstacles);
 		}
 		window.clear();
 		light->draw(window);
-		for (int i = 0; i < 9; i++) {
+		for (int i = 0; i < 9; i++)
+      {
 			lights[i]->draw(window);
 		}
 		window.draw(bg, sf::BlendMultiply);

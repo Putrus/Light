@@ -10,6 +10,5 @@ public:
 	void setColor(sf::Color color);
 	void setPosition(sf::Vector2f);
 	void setPosition(float x, float y);
-
 };
 

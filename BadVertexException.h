@@ -1,6 +1,7 @@
 #pragma once
 
-class BadVertexException {
+class BadVertexException
+{
 public:
 	BadVertexException(){}
 };

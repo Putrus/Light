@@ -1,7 +1,8 @@
 #include "Light.h"
 
 
-Light::Light(){
+Light::Light()
+{
 	this->x = 0.0f;
 	this->y = 0.0f;
 	this->size = 200;
@@ -63,10 +64,12 @@ Light::Light(float x, float y, float size, std::vector<Obstacle> obstacles)
 }
 
 
-Light::~Light() {
+Light::~Light()
+{
 	delete shape;
 	delete shader;
-	for (size_t i = 0; i < lines.size(); i++) {
+	for (size_t i = 0; i < lines.size(); i++)
+   {
 		delete lines[i];
 		lines.erase(lines.begin() + i);
 	}
@@ -100,7 +103,8 @@ void Light::setPosition(float x, float y)
 	setPosition(sf::Vector2f(x, y));
 }
 
-sf::Vector2f Light::getPosition() {
+sf::Vector2f Light::getPosition()
+{
 	return sf::Vector2f(x, y);
 }
 
@@ -118,10 +122,13 @@ void Light::update(std::vector<Obstacle> obstacles)
 		lines[i+2]->calcAlpha();
 	}
 	std::vector<LineTest*> l = lines;
-	std::sort(l.begin(), l.end(), [](LineTest* a, LineTest* b) {
-		return a->getAlpha() < b->getAlpha(); });
+	std::sort(l.begin(), l.end(), [](LineTest* a, LineTest* b)
+   {
+		return a->getAlpha() < b->getAlpha();
+   });
 	(*shape)[0].position = getPosition();
-	for (size_t i = 0; i < l.size(); i += 3) {
+	for (size_t i = 0; i < l.size(); i += 3)
+   {
 		(*shape)[i + 1].position = l[i]->getVertexPosition(1);
 		(*shape)[i + 2].position = l[i + 1]->getVertexPosition(1);
 		(*shape)[i + 3].position = l[i + 2]->getVertexPosition(1);
@@ -131,11 +138,13 @@ void Light::update(std::vector<Obstacle> obstacles)
 
 
 
-std::vector<LineTest*> Light::getLines() {
+std::vector<LineTest*> Light::getLines()
+{
 	return lines;
 }
 
 
-void Light::setBrightness(float brightness) {
+void Light::setBrightness(float brightness)
+{
 	shader->setUniform("brightness", brightness);
 }
