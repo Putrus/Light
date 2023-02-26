@@ -57,7 +57,7 @@ Light::Light(float x, float y, float size, std::vector<Obstacle> obstacles)
 	}
 	shader->setUniform("lightPos", sf::Vector2f(0.0f, 0.0f));
 	shader->setUniform("radius", 400.f);
-	shader->setUniform("brightness", 0.8f);
+	shader->setUniform("brightness", 1.0f);
 	shader->setUniform("color", sf::Vector3f(1.0f, 1.0f, 1.0f));
 
 }
@@ -74,8 +74,7 @@ Light::~Light() {
 
 void Light::draw(sf::RenderWindow& window)
 {
-	/*
-	for (size_t i = 0; i < lines.size(); i++)
+	/*for (size_t i = 0; i < lines.size(); i++)
 	{
 		window.draw(*lines[i]);
 	}*/
