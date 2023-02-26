@@ -28,11 +28,7 @@ void Obstacle::setColor(sf::Color color)
 }
 
 void Obstacle::setPosition(sf::Vector2f pos)
-{
-	
-}
+{}
 
 void Obstacle::setPosition(float x, float y)
-{
-
-}
+{}

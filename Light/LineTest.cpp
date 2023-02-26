@@ -42,10 +42,12 @@ float LineTest::calcCollision(float x_b, float y_b, float x_b2, float y_b2)
 {
 	float x_a = getVertexPosition(0).x;
 	float y_a = getVertexPosition(0).y;
-	if (x_b == x_b2) {
+	if (x_b == x_b2)
+   {
 		x_b-=0.01;
 	}
-	if (y_b == y_b2) {
+	if (y_b == y_b2)
+   {
 		y_b -= 0.01;
 	}
 	float dx_b = x_b2 - x_b;
@@ -67,7 +69,8 @@ float LineTest::calcCollision(float x_b, float y_b, float x_b2, float y_b2)
 	return 1;
 }
 
-void LineTest::calcCollision(std::vector<Obstacle> obstacles) {
+void LineTest::calcCollision(std::vector<Obstacle> obstacles)
+{
 	float dx_a = x_a2 - getVertexPosition(0).x;
 	float dy_a = y_a2 - getVertexPosition(0).y;
 
@@ -75,10 +78,13 @@ void LineTest::calcCollision(std::vector<Obstacle> obstacles) {
 		std::min(calcCollision(1000.0f, 0.0f, 1000.0f, 1000.0f),
 			std::min(calcCollision(1000.0f, 1000.1f, 0.0f, 1000.0f),
 				calcCollision(0.0f, 1000.0f, 0.0f, 0.0f))));
-	for (size_t i = 0; i < obstacles.size(); i++) {
-		for (size_t j = 0; j < obstacles[i].getVertexCount(); j++) {
+	for (size_t i = 0; i < obstacles.size(); i++)
+   {
+		for (size_t j = 0; j < obstacles[i].getVertexCount(); j++)
+      {
 			float tmp = calcCollision(obstacles[i][j].position.x, obstacles[i][j].position.y, obstacles[i][(j + 1) % (int)obstacles[i].getVertexCount()].position.x, obstacles[i][(j + 1) % (int)obstacles[i].getVertexCount()].position.y);
-			if (tmp < t) {
+			if (tmp < t)
+         {
 				t = tmp;
 			}
 		}
@@ -102,7 +108,8 @@ void LineTest::calcDerivativePosition(float alpha, LineTest line, float length)
 	{
 		setVertexPosition(1, x_1 + length * cos(beta + alpha), y_1 - length * sin(beta + alpha));
 	}
-	else {
+	else
+   {
 		setVertexPosition(1, x_1 + length * cos(beta - alpha), y_1 + length * sin(beta - alpha));
 	}
 	x_a2 = getVertexPosition(1).x;
@@ -119,18 +126,22 @@ float LineTest::getLength()
 void LineTest::calcAlpha() {
 
 	float a = atan((this->getVertexPosition(0).y - this->getVertexPosition(1).y) / (this->getVertexPosition(0).x - this->getVertexPosition(1).x));
-	if (getVertexPosition(1).x > getVertexPosition(0).x) {
+	if (getVertexPosition(1).x > getVertexPosition(0).x)
+   {
 		alpha = 3.146 + a;
 	}
-	else if (getVertexPosition(1).x <= getVertexPosition(0).x && getVertexPosition(1).y >= getVertexPosition(0).y) {
+	else if (getVertexPosition(1).x <= getVertexPosition(0).x && getVertexPosition(1).y >= getVertexPosition(0).y)
+   {
 		alpha = 6.292 + a;
 	}
-	else {
+	else
+   {
 		alpha = a;
 	}
 	return;
 }
 
-float LineTest::getAlpha() {
+float LineTest::getAlpha()
+{
 	return alpha;
 }
