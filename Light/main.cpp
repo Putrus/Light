@@ -22,20 +22,26 @@ int main()
 	bg.setTextureRect(sf::IntRect(0, 0, 8000, 8000));
 
 	std::vector<Obstacle> obstacles;
-	Obstacle obstacle(sf::Vector2f(100.0f, 100.0f), sf::Vector2f(150.0f, 100.0f), sf::Vector2f(150.0f, 150.0f), sf::Vector2f(100.0f, 150.0f));
+	Obstacle obstacle(sf::Vector2f(100.f, 100.f), sf::Vector2f(150.f, 100.f), sf::Vector2f(150.f, 150.f), sf::Vector2f(100.f, 150.f));
 	obstacle.setColor(sf::Color::Red);
-	Obstacle obstacle2(sf::Vector2f(300.0f, 300.0f), sf::Vector2f(370.0f, 300.0f), sf::Vector2f(400.0f, 170.0f), sf::Vector2f(40.0f, 250.0f));
+	Obstacle obstacle2(sf::Vector2f(300.f, 300.f), sf::Vector2f(370.f, 300.f), sf::Vector2f(400.f, 170.f), sf::Vector2f(40.f, 250.f));
 	obstacle2.setColor(sf::Color::Blue);
-	Obstacle obstacle3(sf::Vector2f(400.0f, 400.0f), sf::Vector2f(560.0f, 210.0f), sf::Vector2f(580.0f, 550.0f), sf::Vector2f(380.0f, 560.0f));
+	Obstacle obstacle3(sf::Vector2f(400.f, 400.f), sf::Vector2f(560.f, 210.f), sf::Vector2f(580.f, 550.f), sf::Vector2f(380.f, 560.f));
 	obstacle3.setColor(sf::Color::Green);
+	Obstacle obstacle4(sf::Vector2f(700.f, 700.f), sf::Vector2f(850.f, 800.f), sf::Vector2f(900.f, 900.f), sf::Vector2f(500.f, 900.f));
+	obstacle4.setColor(sf::Color::Magenta);
+	Obstacle obstacle5(sf::Vector2f(50.f, 700.f), sf::Vector2f(100.f, 680.f), sf::Vector2f(100.f, 750.f), sf::Vector2f(40.f, 800.f));
+	obstacle4.setColor(sf::Color::Yellow);
 	obstacles.push_back(obstacle);
 	obstacles.push_back(obstacle2);
 	obstacles.push_back(obstacle3);
-	Light* light = new Light(0.0f, 0.0f, 1200.0f, obstacles);
+	obstacles.push_back(obstacle4);
+	obstacles.push_back(obstacle5);
+	Light* light = new Light(0.f, 0.f, 1200.f, obstacles);
 	std::vector<Light*> lights;
 	for (int i = 0; i < 9; i++)
    {
-		Light* light1 = new Light(0.0f, 0.0f, 1200.0f, obstacles);
+		Light* light1 = new Light(0.f, 0.f, 1200.f, obstacles);
 		light1->setBrightness(0.4f);
 		lights.push_back(light1);
 	}
@@ -53,7 +59,7 @@ int main()
 		light->update(obstacles);
 		for (int i = 0; i < 9; i++)
       {
-			lights[i]->setPosition(mx + 5.0f * cos(6.28 * i/9), my - 5.0f * sin(6.28 * i/9));
+			lights[i]->setPosition(mx + 5.f * cos(6.28 * i/9), my - 5.f * sin(6.28 * i/9));
 			lights[i]->update(obstacles);
 		}
 		window.clear();
